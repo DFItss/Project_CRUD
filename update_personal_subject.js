@@ -71,7 +71,7 @@ async function checkConditions(num, sbj_num) {
   // 3. 학점 초과하지 않는지
   const creditPromise = new Promise((resolve, reject) => {
     // 
-    const sql = `select student.num num, sum(subject.sub_credit) sum, student.credit from 
+    const sql = `select student.num num, sum(sub_credit) sum, student.credit from 
     (list join student on list.num = student.num) join subject
     on list.sub_num = subject.sub_num
     where student.num=?
