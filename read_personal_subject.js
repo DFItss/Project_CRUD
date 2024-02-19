@@ -1,5 +1,5 @@
-// let mysql = require('mysql')
-let mysql = require("mysql2");
+let mysql = require('mysql')
+// let mysql = require("mysql2");
 const Table = require('./make_table')
 const del = require('./delete_personal_subject')
 
