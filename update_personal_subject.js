@@ -71,11 +71,11 @@ async function checkConditions(num, sbj_num) {
   // 3. 학점 초과하지 않는지
   const creditPromise = new Promise((resolve, reject) => {
     // 
-    const sql = `select student.num num, sum(sub_credit) sum, student.credit from 
-    (list join student on list.num = student.num) join subject
-    on list.sub_num = subject.sub_num
+    const sql = `select student.num num, sum(sub_credit) sum from 
+    ((list join student on list.num = student.num) join subject
+    on list.sub_num = subject.sub_num)
     where student.num=?
-    group by student.num;`;
+    group by student.num`;
     connection.query(sql, [num], (err, result, fields) => {
       if (err) return reject(err);
       // console.log(result);
