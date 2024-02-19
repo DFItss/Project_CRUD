@@ -1,7 +1,8 @@
 const readline = require("readline");
 const Input = require('./userInput');
 const rs = require("./read_subject");
-let mysql = require("mysql");
+// let mysql = require("mysql");
+let mysql = require("mysql2");
 
 let connection = mysql.createConnection({
   host: process.env.DB_HOST,

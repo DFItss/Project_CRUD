@@ -28,7 +28,8 @@
 // module.exports={read_sjt}
 
 
-let mysql = require('mysql');
+// let mysql = require('mysql');
+let mysql = require("mysql2");
 const Table = require('./make_table')
 
 let connection = mysql.createConnection({
@@ -50,16 +51,19 @@ async function read_sjt(){
     });
   }
 
-  let sql = `SELECT * FROM subject`;
+  // let sql = `SELECT * FROM subject`;
+  let sql = `select sbj.sub_num, sbj.sub_name, sbj.sub_professor, sbj.sub_credit, ifnull(li.count,0), sbj.sub_person from (select sub_num,  count(sub_num) as count from list group by sub_num) as li right join subject as sbj on li.sub_num = sbj.sub_num order by sbj.sub_num asc`;
 
   connection.query(sql, [true], (error, results, fields) => {
     if (error) return console.error(error.message);
     let n=0
-      console.log("과목번호 \t 과목이름 \t 최대인원 \t 학점 \t 담당교수")
-      console.log('--')
+      // console.log("과목번호 \t 과목이름 \t 최대인원 \t 학점 \t 담당교수")
+      // console.log('--')
+      Table.make_table('t',['과목번호','과목이름','담당교수','학점','현인원','최대인원'])
+
       while(results[n])
       {
-        Table.make_table(results[n])
+        Table.make_table('v',results[n])
           // console.log(`${Object.values(results[n])[0]} \t ${Object.values(results[n])[1]} \t ${Object.values(results[n])[2]} \t ${Object.values(results[n])[3]} \t ${Object.values(results[n])[4]}`)
           n++
       }
