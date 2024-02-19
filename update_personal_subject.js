@@ -11,11 +11,15 @@ let connection = mysql.createConnection({
   database: process.env.DB_NAME,
 });
 
+// 조건 검사 함수: Promise로 반환
 async function checkConditions(num, sbj_num) {
+  // 조건 만족 검사 변수 : num, sbj_num를 이용해서
   let possible = true;
 
   // 0. 존재하는 과목인지
   const validPromise = new Promise((resolve, reject) => {
+    // subject 테이블 안에 과목번호가 존재하는지 검사 
+    // cnt 값: 0 or 1
     let sql = `select count(*) cnt from subject 
     where subject.sub_num=?`;
     connection.query(sql, [sbj_num], (err, result, fields) => {
@@ -30,9 +34,11 @@ async function checkConditions(num, sbj_num) {
 
   // 1. 중복 신청인지
   const dupPromise = new Promise((resolve, reject) => {
-    let sql = `select count(*) cnt from list join subject 
-    on list.sub_num = subject.sub_num
-    where subject.sub_num=? and num=?`;
+    // list 테이블 안에 학생번호, 과목번호 모두 일치하는 값이 존재하는지 검사
+    // 과목
+    // cnt 값: 0 or 1
+    let sql = `select count(*) cnt from list
+    where sub_num=? and num=?`;
     connection.query(sql, [sbj_num, num], (err, result, fields) => {
       if (err) return reject(err);
       if (result[0].cnt > 0) {
@@ -45,6 +51,8 @@ async function checkConditions(num, sbj_num) {
   
   // 2. 인원 초과하지 않는지
   const capacityPromise = new Promise((resolve, reject) => {
+    // list 테이블 안에 
+    // cnt 값: 0 or 1
     const sql = `select count(*) cnt, sub_person from list join subject 
     on list.sub_num = subject.sub_num
     where subject.sub_num=?`;
@@ -61,6 +69,7 @@ async function checkConditions(num, sbj_num) {
 
   // 3. 학점 초과하지 않는지
   const creditPromise = new Promise((resolve, reject) => {
+    // 
     const sql = `select student.num num, sum(subject.sub_credit) sum, student.credit from 
     (list join student on list.num = student.num) join subject
     on list.sub_num = subject.sub_num
