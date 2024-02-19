@@ -57,6 +57,7 @@ async function checkConditions(num, sbj_num) {
     const sql = `select count(*) cnt, subject.sub_num, sub_person from 
     list join subject 
       on list.sub_num = subject.sub_num
+      where subject.sub_num=?
       group by subject.sub_num, sub_person;`;
     connection.query(sql, [sbj_num], (err, result, fields) => {
       if (err) return reject(err);
