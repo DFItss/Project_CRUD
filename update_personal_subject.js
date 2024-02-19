@@ -74,7 +74,7 @@ async function checkConditions(num, sbj_num) {
     const sql = `select student.num num, sum(sub_credit) sum, student.credit from 
     ((list join student on list.num = student.num) join subject
     on list.sub_num = subject.sub_num)
-    where student.num=3
+    where student.num=?
     group by student.num, student.credit;`;
     connection.query(sql, [num], (err, result, fields) => {
       if (err) return reject(err);
