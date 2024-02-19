@@ -51,18 +51,19 @@ async function checkConditions(num, sbj_num) {
   });
   
   // 2. 인원 초과하지 않는지
+  
   const capacityPromise = new Promise((resolve, reject) => {
     // list 테이블 안에 
     // cnt 값: 0 or 1
     const sql = `select count(*) cnt, subject.sub_num, sub_person from 
     list join subject 
       on list.sub_num = subject.sub_num
-      where subject.sub_num=?
+      where num=?
       group by subject.sub_num, sub_person;`;
     connection.query(sql, [sbj_num], (err, result, fields) => {
       if (err) return reject(err);
-      // console.log(result);
-      if (result[0].cnt !== 0 && result[0].cnt >= result[0].sub_person) {
+      // console.log(result, result.length);
+      if (result.length !== 0 && result[0].cnt >= result[0].sub_person) {
         possible = false;
         console.log("▶ 신청 인원이 마감되었습니다.");
       }
@@ -89,7 +90,7 @@ async function checkConditions(num, sbj_num) {
     });
   });
 
-  await Promise.all([dupPromise, capacityPromise, creditPromise]);
+  await Promise.all([validPromise, dupPromise, creditPromise]);
   // console.log("통과: ", possible);
   return possible;
 }
