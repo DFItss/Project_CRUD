@@ -54,9 +54,11 @@ async function checkConditions(num, sbj_num) {
   const capacityPromise = new Promise((resolve, reject) => {
     // list 테이블 안에 
     // cnt 값: 0 or 1
-    const sql = `select count(*) cnt, sub_person from list join subject 
-    on list.sub_num = subject.sub_num
-    where subject.sub_num=?`;
+    const sql = `select count(*) cnt, subject.sub_num, sub_person from 
+    list join subject 
+      on list.sub_num = subject.sub_num
+      where subject.sub_num=?
+      group by subject.sub_num, sub_person;`;
     connection.query(sql, [sbj_num], (err, result, fields) => {
       if (err) return reject(err);
       // console.log(result);
@@ -72,8 +74,8 @@ async function checkConditions(num, sbj_num) {
   const creditPromise = new Promise((resolve, reject) => {
     // 
     const sql = `select student.num num, sum(sub_credit) sum, student.credit from 
-    (list join student on list.num = student.num) join subject
-    on list.sub_num = subject.sub_num
+    ((list join student on list.num = student.num) join subject
+    on list.sub_num = subject.sub_num)
     where student.num=?
     group by student.num, student.credit;`;
     connection.query(sql, [num], (err, result, fields) => {
